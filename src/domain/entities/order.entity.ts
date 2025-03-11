@@ -1,26 +1,42 @@
-import { OrderStatus } from '../value-objects/order-status';
+import { OrderAddressChangedEvent } from '../events/order-address-changed.event';
+import { OrderCreatedEvent } from '../events/order-created.event';
+import { UniqueEntityId } from '../identifer/unique-entity.id';
+import { WatchedList } from '../patterns/watched-list.pattern';
+import { Address } from '../value-objects/address.vo';
+import { AggregateRoot } from './aggregate-root';
 import { OrderItem } from './order-item.entity';
 
-export class Order {
-  constructor(
-    public readonly id: string,
-    public readonly customerId: string,
-    public items: OrderItem[],
-    public status: OrderStatus,
-    public createdAt: Date,
-  ) {}
+interface OrderProps {
+  customerId: string;
+  address: Address;
+  items: OrderItem[];
+}
 
-  completeOrder() {
-    if (this.status !== OrderStatus.PENDING) {
-      throw new Error('Order cannot be completed');
-    }
-    this.status = OrderStatus.COMPLETED;
+export class OrderAggregate extends AggregateRoot<OrderProps> {
+  private constructor(props: OrderProps, id?: UniqueEntityId) {
+    super(props, id);
   }
 
-  cancelOrder() {
-    if (this.status === OrderStatus.COMPLETED) {
-      throw new Error('Completed order cannot be cancelled');
-    }
-    this.status = OrderStatus.CANCELLED;
+  get customerId(): string {
+    return this.props.customerId;
+  }
+
+  get address(): Address {
+    return this.props.address;
+  }
+
+  public static create(props: OrderProps, id?: UniqueEntityId): OrderAggregate {
+    // if (props.items.getItems().length === 0) {
+    //   throw new Error('Order must have at least one item');
+    // }
+
+    const order = new OrderAggregate(props, id);
+    order.addDomainEvent(new OrderCreatedEvent(order.id));
+    return order;
+  }
+
+  public changeAddress(address: Address): void {
+    this.props.address = address;
+    this.addDomainEvent(new OrderAddressChangedEvent(this.id, address));
   }
 }
