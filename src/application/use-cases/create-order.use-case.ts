@@ -6,30 +6,23 @@ import {
 } from 'src/domain/repositories/order.repository.interface';
 import { OrderDTOMapper } from 'src/interface/mappers/order.dto.mapper';
 import { CreateOrderCommand } from '../commands/create-order.command';
+import { OrderCreatedEvent } from 'src/domain/events/order-created.event';
+import { EVENT_PRODUCER, EventBusPortInterface } from '../ports/event-bus.port';
 
 @Injectable()
 export class CreateOrderUseCase {
   constructor(
     @Inject(ORDER_REPOSITORY)
     private readonly orderRepository: OrderRepositoryInterface,
+    @Inject(EVENT_PRODUCER)
+    private readonly eventBusProducer: EventBusPortInterface,
   ) {}
 
   async execute(command: CreateOrderCommand): Promise<UniqueEntityId> {
     const order = OrderDTOMapper.toDomain(command.dto);
     await this.orderRepository.save(order);
+    const event = new OrderCreatedEvent(order.id, order.customerId);
+    await this.eventBusProducer.emit('order-created', event);
     return order.id;
   }
-
-  // async createOrder(dto: CreateOrderDTO): Promise<UniqueEntityId> {
-  //   const order = OrderDTOMapper.toDomain(dto);
-  //   await this.orderRepository.save(order);
-  //   return order.id;
-  // }
-
-  // async getOrderById(orderId: string): Promise<CreateOrderDTO | null> {
-  //   const order = await this.orderRepository.findById(
-  //     new UniqueEntityId(orderId),
-  //   );
-  //   return order ? OrderDTOMapper.toDTO(order) : null;
-  // }
 }

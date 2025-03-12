@@ -31,7 +31,7 @@ export class OrderAggregate extends AggregateRoot<OrderProps> {
     // }
 
     const order = new OrderAggregate(props, id);
-    order.addDomainEvent(new OrderCreatedEvent(order.id));
+    order.addDomainEvent(new OrderCreatedEvent(order.id, props.customerId));
     return order;
   }
 

@@ -11,6 +11,10 @@ export class OrderAddressChangedEvent implements DomainEventInterface {
   ) {
     this.dateTimeOccurred = new Date();
   }
+
+  toJSON(): Record<string, unknown> {
+    throw new Error('Method not implemented.');
+  }
   getAggregateRootId(): UniqueEntityId {
     return this.orderId;
   }

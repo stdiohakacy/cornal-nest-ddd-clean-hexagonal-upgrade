@@ -29,8 +29,8 @@ export class OrderRepositoryImpl implements OrderRepositoryInterface {
   }
 
   async findAll(): Promise<OrderAggregate[]> {
-    const orderOrms = await this.orderRepository.find({ relations: ['items'] });
-    return orderOrms.map((order) => OrderMapper.toDomain(order));
+    const orderOrm = await this.orderRepository.find({ relations: ['items'] });
+    return orderOrm.map((order) => OrderMapper.toDomain(order));
   }
 
   async delete(orderId: UniqueEntityId): Promise<void> {
