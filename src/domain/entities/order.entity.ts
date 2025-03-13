@@ -1,7 +1,6 @@
 import { OrderAddressChangedEvent } from '../events/order-address-changed.event';
 import { OrderCreatedEvent } from '../events/order-created.event';
 import { UniqueEntityId } from '../identifer/unique-entity.id';
-import { WatchedList } from '../patterns/watched-list.pattern';
 import { Address } from '../value-objects/address.vo';
 import { AggregateRoot } from './aggregate-root';
 import { OrderItem } from './order-item.entity';

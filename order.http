@@ -22,3 +22,8 @@ Content-Type: application/json
     }
   ]
 }
+
+
+###
+GET http://localhost:3000/orders/customer/123456789
+Content-Type: application/json

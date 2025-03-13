@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
-import { EventBusPortInterface } from 'src/application/ports/event-bus.port';
+import { EventBusPortInterface } from 'src/application/ports/event-bus-port.interface';
 import { DomainEventInterface } from 'src/domain/events/domain.event.interface';
 
 @Injectable()

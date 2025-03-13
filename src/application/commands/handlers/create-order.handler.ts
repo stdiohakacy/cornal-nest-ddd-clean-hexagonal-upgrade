@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreateOrderCommand } from '../commands/create-order.command';
-import { CreateOrderUseCase } from '../use-cases/create-order.use-case';
 import { UniqueEntityId } from 'src/domain/identifer/unique-entity.id';
+import { CreateOrderCommand } from '../create-order.command';
+import { CreateOrderUseCase } from 'src/application/use-cases/create-order.use-case';
 
 @CommandHandler(CreateOrderCommand)
 export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {

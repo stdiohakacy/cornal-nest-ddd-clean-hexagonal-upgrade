@@ -7,7 +7,10 @@ import {
 import { OrderDTOMapper } from 'src/interface/mappers/order.dto.mapper';
 import { CreateOrderCommand } from '../commands/create-order.command';
 import { OrderCreatedEvent } from 'src/domain/events/order-created.event';
-import { EVENT_PRODUCER, EventBusPortInterface } from '../ports/event-bus.port';
+import {
+  EVENT_PRODUCER,
+  EventBusPortInterface,
+} from '../ports/event-bus-port.interface';
 
 @Injectable()
 export class CreateOrderUseCase {
@@ -20,8 +23,8 @@ export class CreateOrderUseCase {
 
   async execute(command: CreateOrderCommand): Promise<UniqueEntityId> {
     const order = OrderDTOMapper.toDomain(command.dto);
-    await this.orderRepository.save(order);
     const event = new OrderCreatedEvent(order.id, order.customerId);
+    await this.orderRepository.save(order);
     await this.eventBusProducer.emit('order-created', event);
     return order.id;
   }
